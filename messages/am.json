@@ -1,0 +1,48 @@
+{
+    "common": {
+        "adminLogin": "የአስተዳዳሪ መግቢያ",
+        "download": "አውርድ",
+        "close": "ዝጋ",
+        "loading": "በመጫን ላይ...",
+        "error": "ስህተት",
+        "success": "ተሳክቷል"
+    },
+    "hero": {
+        "title": "የተቀናጀ፣ ግልጽ፣ ተጠያቂ።",
+        "subtitle": "ወረዳ 9 የአገልግሎት ዴስክ",
+        "description": "በትምህርት፣ ጤና እና እቅድ ዘርፎች ላይ የተከበረ አገልግሎት፣ ሆን ተብሎ የተደረገ እቅድ እና ተጠያቂነት ያለው ግንኙነት እናቀርባለን።"
+    },
+    "leaders": {
+        "messageFrom": "ከአስተዳዳሪው መልእክት",
+        "leaders": "መሪዎች"
+    },
+    "documents": {
+        "title": "ሰነዶች",
+        "noDocuments": "ምንም ሰነድ አልተገኘም",
+        "noDocumentsMessage": "አስተዳዳሪው አዲስ መዝገቦችን ከሰቀለ በኋላ በቅርቡ ይመልከቱ።",
+        "viewFile": "ይመልከቱ",
+        "downloadFile": "አውርድ",
+        "year": "ዓመት",
+        "file": "ፋይል",
+        "files": "ፋይሎች"
+    },
+    "access": {
+        "requestAccess": "መዳረሻ ይጠይቁ",
+        "pending": "በመጠባበቅ ላይ",
+        "approved": "መዳረሻ ጸድቋል",
+        "denied": "መዳረሻ ተከልክሏል",
+        "expired": "መዳረሻ አልቋል",
+        "viewDocuments": "ሰነዶችን ይመልከቱ"
+    },
+    "footer": {
+        "official": "ኦፊሴላዊ",
+        "services": "አገልግሎቶች",
+        "contact": "ያግኙን",
+        "home": "መነሻ",
+        "documents": "ሰነዶች",
+        "education": "ትምህርት",
+        "health": "ጤና",
+        "community": "ማህበረሰብ",
+        "copyright": "አስተዳደር"
+    }
+}

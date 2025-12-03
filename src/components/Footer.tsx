@@ -1,83 +1,36 @@
-import Link from "next/link";
-import { HiHome, HiEnvelope, HiPhone, HiAcademicCap, HiHeart, HiUserGroup, HiQrCode, HiDocumentText } from "react-icons/hi2";
+"use client";
 
-interface FooterColumn {
-  title: string;
-  links: { label: string; href: string; icon: React.ComponentType<{ className?: string }> | null }[];
-}
+import { useTranslations } from 'next-intl';
 
 interface FooterProps {
   woredaName: string;
 }
 
-const columns: FooterColumn[] = [
-  {
-    title: "Official",
-    links: [
-      { label: "Home", href: "/", icon: HiHome },
-      { label: "Request Access", href: "/request-access", icon: HiQrCode },
-      { label: "Documents", href: "/documents", icon: HiDocumentText },
-    ],
-  },
-  {
-    title: "Services",
-    links: [
-      { label: "Education", href: "#", icon: HiAcademicCap },
-      { label: "Health", href: "#", icon: HiHeart },
-      { label: "Community", href: "#", icon: HiUserGroup },
-    ],
-  },
-  {
-    title: "Contact",
-    links: [
-      { label: "info@woreda.gov", href: "mailto:info@woreda.gov", icon: HiEnvelope },
-      { label: "Call Center", href: "tel:+251111000000", icon: HiPhone },
-    ],
-  },
-];
-
 export function Footer({ woredaName }: FooterProps) {
+  const t = useTranslations('footer');
+
   return (
-    <footer className="mt-16 border-t border-slate-200/80 pt-8 text-slate-600">
-      <div className="grid gap-8 md:grid-cols-3">
-        <div className="text-slate-900">
-          <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+    <footer className="border-t border-slate-100 bg-white py-12">
+      <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="text-center md:text-left">
+          <p className="text-sm font-bold uppercase tracking-widest text-slate-900">
             {woredaName}
           </p>
-          <p className="mt-2 max-w-sm text-sm">
-            Sustaining transparent service delivery with a citizen-first
-            mandate, respectful governance, and measured progress.
+          <p className="text-xs text-slate-500 mt-1">
+            Official Government Portal
           </p>
         </div>
-        {columns.map((column) => (
-          <div key={column.title}>
-            <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-              {column.title}
-            </p>
-            <ul className="mt-4 space-y-2 text-sm">
-              {column.links.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <li key={link.label}>
-                    <Link
-                      className="flex items-center gap-2 text-slate-600 transition hover:text-slate-900"
-                      href={link.href}
-                    >
-                      {Icon && <Icon className="h-4 w-4" />}
-                      {link.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+
+        <div className="flex gap-8 text-sm text-slate-600">
+          <a href="#" className="hover:text-[#4169E1] transition-colors">Privacy</a>
+          <a href="#" className="hover:text-[#4169E1] transition-colors">Terms</a>
+          <a href="#" className="hover:text-[#4169E1] transition-colors">Contact</a>
+        </div>
+
+        <div className="text-xs text-slate-400">
+          © {new Date().getFullYear()} All rights reserved.
+        </div>
       </div>
-      <p className="mt-8 text-xs uppercase tracking-[0.35em] text-slate-400">
-        © {new Date().getFullYear()} {woredaName} Administration
-      </p>
     </footer>
   );
 }
-
-

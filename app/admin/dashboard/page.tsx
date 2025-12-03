@@ -12,124 +12,141 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardPage() {
-  const recentRequests = await listRecentQrRequests();
+  const recentRequests = await listRecentQrRequests(50); // Fetch more to allow filtering
+
+  // Filter: Hide approved requests older than 24 hours
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  const filteredRequests = recentRequests.filter((req) => {
+    if (req.status === "pending") return true;
+    return new Date(req.created_at) > oneDayAgo;
+  }).slice(0, 10); // Show top 10 after filtering
+
+  // Calculate stats
+  const pendingCount = recentRequests.filter(r => r.status === "pending").length;
+  const approvedCount = recentRequests.filter(r => r.status === "approved").length;
 
   return (
-    <div className="space-y-10">
-      <section className="rounded-[32px] border border-white/10 bg-slate-900/80 p-6 text-sm text-slate-200 shadow-[0_30px_60px_rgba(15,23,42,0.5)]">
-        <p className="text-xs uppercase tracking-[0.45em] text-slate-400">
-          Logged in as administrator
+    <div className="space-y-6 pb-20 md:pb-0">
+      {/* Welcome Section */}
+      <section className="rounded-3xl bg-gradient-to-br from-blue-600 to-purple-700 p-6 text-white shadow-lg">
+        <p className="text-xs font-medium uppercase tracking-wider text-blue-200">
+          Administrator
         </p>
-        <h1 className="mt-3 text-3xl font-semibold text-white">
-          {publicEnv.NEXT_PUBLIC_WOREDA_NAME} Dashboard
+        <h1 className="mt-2 text-2xl font-bold">
+          {publicEnv.NEXT_PUBLIC_WOREDA_NAME}
         </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
-          Review incoming QR access requests, manage approved tokens, and upload
-          documents directly to Cloudflare R2 with a secure metadata log.
+        <p className="mt-1 text-sm text-blue-100 opacity-90">
+          Manage access and documents securely.
         </p>
       </section>
 
-      <section className="space-y-4 rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.08)]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-              <HiQrCode className="h-5 w-5 text-blue-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-slate-900">
-              QR Access Requests
-            </h2>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="rounded-2xl bg-white p-4 shadow-sm border border-slate-100">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="h-2 w-2 rounded-full bg-amber-500" />
+            <span className="text-xs font-bold uppercase text-slate-400">Pending</span>
           </div>
-          <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-            {recentRequests.length} recent
-          </p>
+          <p className="text-3xl font-bold text-slate-900">{pendingCount}</p>
         </div>
+        <div className="rounded-2xl bg-white p-4 shadow-sm border border-slate-100">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="text-xs font-bold uppercase text-slate-400">Approved</span>
+          </div>
+          <p className="text-3xl font-bold text-slate-900">{approvedCount}</p>
+        </div>
+      </div>
+
+      {/* Recent Requests */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-lg font-bold text-slate-900">Recent Requests</h2>
+          <span className="text-xs font-medium text-slate-500">
+            {filteredRequests.length} visible
+          </span>
+        </div>
+
         <div className="space-y-3">
-          {recentRequests.map((request) => (
-            <article
-              key={request.id}
-              className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-base font-semibold text-slate-900">
-                    {request.code}
-                  </p>
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-                    {request.ip_address ?? "IP Unknown"} ·{" "}
-                    {new Date(request.created_at).toLocaleString()}
-                  </p>
+          {filteredRequests.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+              <p className="text-sm text-slate-500">No recent requests found</p>
+            </div>
+          ) : (
+            filteredRequests.map((request) => (
+              <article
+                key={request.id}
+                className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm border border-slate-100"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-slate-900 font-mono">
+                        {request.code}
+                      </span>
+                      {request.status === "approved" && (
+                        <HiCheckCircle className="h-5 w-5 text-emerald-500" />
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-400 mt-1">
+                      {new Date(request.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold uppercase tracking-wider ${request.status === "approved"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : "bg-amber-100 text-amber-700"
+                      }`}
+                  >
+                    {request.status}
+                  </span>
                 </div>
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.3em] ${
-                  request.status === "approved"
-                    ? "bg-emerald-50 text-emerald-700"
-                    : "bg-amber-50 text-amber-700"
-                }`}>
-                  {request.status === "approved" ? (
-                    <HiCheckCircle className="h-3.5 w-3.5" />
-                  ) : (
-                    <HiClock className="h-3.5 w-3.5" />
-                  )}
-                  {request.status}
-                </span>
-              </div>
-              <form action={approveRequestAction} className="flex gap-3">
-                <input type="hidden" name="requestId" value={request.id} />
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-emerald-700 transition hover:border-emerald-400 hover:bg-emerald-100"
-                >
-                  <HiCheckCircle className="h-4 w-4" />
-                  Approve
-                </button>
-              </form>
-            </article>
-          ))}
+
+                {request.status === "pending" && (
+                  <form action={approveRequestAction} className="pt-2 border-t border-slate-50">
+                    <input type="hidden" name="requestId" value={request.id} />
+                    <button
+                      type="submit"
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-sm font-bold text-white transition active:scale-95 hover:bg-emerald-700"
+                    >
+                      <HiCheckCircle className="h-5 w-5" />
+                      Approve Access
+                    </button>
+                  </form>
+                )}
+              </article>
+            ))
+          )}
         </div>
       </section>
 
-      <section className="space-y-4 rounded-[32px] border border-slate-200 bg-white/90 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.08)]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
-              <HiDocumentArrowUp className="h-5 w-5 text-indigo-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-slate-900">
-              Quick Actions
-            </h2>
-          </div>
-        </div>
+      {/* Quick Actions */}
+      <section className="space-y-4">
+        <h2 className="text-lg font-bold text-slate-900 px-2">Quick Actions</h2>
         <div className="grid gap-4 md:grid-cols-2">
           <Link
             href="/admin/upload"
-            className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-6 transition hover:border-indigo-300 hover:bg-indigo-50/50"
+            className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-slate-100 transition active:scale-95"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50">
-                <HiDocumentArrowUp className="h-5 w-5 text-indigo-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900">
-                Upload Documents
-              </h3>
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+              <HiDocumentArrowUp className="h-6 w-6" />
             </div>
-            <p className="text-sm text-slate-600">
-              Upload multiple documents by category, subcategory, and year.
-            </p>
+            <div>
+              <h3 className="font-bold text-slate-900">Upload Document</h3>
+              <p className="text-xs text-slate-500">Add new files</p>
+            </div>
           </Link>
           <Link
             href="/admin/documents"
-            className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-6 transition hover:border-blue-300 hover:bg-blue-50/50"
+            className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm border border-slate-100 transition active:scale-95"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50">
-                <HiDocumentText className="h-5 w-5 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-slate-900">
-                View All Documents
-              </h3>
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <HiDocumentText className="h-6 w-6" />
             </div>
-            <p className="text-sm text-slate-600">
-              Browse and manage all uploaded documents by category.
-            </p>
+            <div>
+              <h3 className="font-bold text-slate-900">View Documents</h3>
+              <p className="text-xs text-slate-500">Manage uploads</p>
+            </div>
           </Link>
         </div>
       </section>

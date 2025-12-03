@@ -26,6 +26,21 @@ const categories: LeaderCategory[] = [
         title: "Youth Programs Director",
         photo: educationLead,
       },
+      {
+        name: "Tigist Bekele",
+        title: "School Supervisor",
+        photo: educationLead,
+      },
+      {
+        name: "Dawit Kebede",
+        title: "Curriculum Specialist",
+        photo: educationLead,
+      },
+      {
+        name: "Hana Mekonnen",
+        title: "Youth Coordinator",
+        photo: educationLead,
+      },
     ],
   },
   {
@@ -42,6 +57,16 @@ const categories: LeaderCategory[] = [
         title: "Social Services Coordinator",
         photo: healthLead,
       },
+      {
+        name: "Dr. Abebe Tadesse",
+        title: "Medical Officer",
+        photo: healthLead,
+      },
+      {
+        name: "Sara Yohannes",
+        title: "Public Health Nurse",
+        photo: healthLead,
+      },
     ],
   },
   {
@@ -56,6 +81,16 @@ const categories: LeaderCategory[] = [
       {
         name: "Dereje Solomon",
         title: "Infrastructure Liaison",
+        photo: portrait,
+      },
+      {
+        name: "Kassahun Tsegaye",
+        title: "Urban Planner",
+        photo: portrait,
+      },
+      {
+        name: "Bethlehem Assefa",
+        title: "Project Manager",
         photo: portrait,
       },
     ],

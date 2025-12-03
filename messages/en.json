@@ -1,0 +1,48 @@
+{
+    "common": {
+        "adminLogin": "Admin Login",
+        "download": "Download",
+        "close": "Close",
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success"
+    },
+    "hero": {
+        "title": "Coordinated, Transparent, Accountable.",
+        "subtitle": "Woreda 9 Service Desk",
+        "description": "We deliver dignified services, deliberate planning, and responsible communication across education, health, and planning portfolios."
+    },
+    "leaders": {
+        "messageFrom": "Message from the Administrator",
+        "leaders": "leaders"
+    },
+    "documents": {
+        "title": "Documents",
+        "noDocuments": "No Documents Found",
+        "noDocumentsMessage": "Please check back shortly after the administrator uploads new records.",
+        "viewFile": "View",
+        "downloadFile": "Download",
+        "year": "Year",
+        "file": "file",
+        "files": "files"
+    },
+    "access": {
+        "requestAccess": "Request Access",
+        "pending": "Pending Approval",
+        "approved": "Access Approved",
+        "denied": "Access Denied",
+        "expired": "Access Expired",
+        "viewDocuments": "View Documents"
+    },
+    "footer": {
+        "official": "Official",
+        "services": "Services",
+        "contact": "Contact",
+        "home": "Home",
+        "documents": "Documents",
+        "education": "Education",
+        "health": "Health",
+        "community": "Community",
+        "copyright": "Administration"
+    }
+}

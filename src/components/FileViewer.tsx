@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HiXMark, HiArrowDownTray } from "react-icons/hi2";
+import { HiXMark, HiArrowDownTray, HiDocumentText } from "react-icons/hi2";
 
 interface FileViewerProps {
   fileUrl: string;
@@ -15,7 +15,7 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewUrl, setViewUrl] = useState<string>("");
-  
+
   const fileExtension = fileName.split(".").pop()?.toLowerCase() || "";
   const isImage = ["jpg", "jpeg", "png", "gif", "webp", "svg", "bmp"].includes(fileExtension);
   const isPdf = fileExtension === "pdf";
@@ -28,13 +28,10 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
     if (isOpen) {
       setLoading(true);
       setError(null);
-      
+
       // For Office documents, we need to get the direct public R2 URL
       // because Microsoft Office Online Viewer can't access our authenticated proxy
       if (isOffice && accessToken) {
-        console.log("📄 Loading Office document:", fileName);
-        console.log("🔗 Original file URL:", fileUrl);
-        
         // Fetch the public URL from our API
         fetch(`/api/get-public-file-url?url=${encodeURIComponent(fileUrl)}&token=${encodeURIComponent(accessToken)}`)
           .then(async (res) => {
@@ -49,40 +46,33 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
             const isAccessible = data.isAccessible;
             const accessibilityError = data.error;
             const message = data.message;
-            
-            console.log("✅ Got public URL:", publicUrl);
-            console.log("📊 Accessibility status:", isAccessible ? "✅ Accessible" : `❌ Not accessible: ${accessibilityError}`);
-            
+
+
             if (!isAccessible) {
               console.error("❌ File is not publicly accessible. Office viewer will fail.");
               console.error("💡 Solution: Enable public R2.dev domain for your bucket in Cloudflare Dashboard");
               console.error("   Go to: R2 → Your bucket → Settings → Public R2.dev Subdomain");
               console.error("   Enable the domain: pub-fcc35482a42b44e989b242c288d0d9e1.r2.dev");
-              
+
               // For Office documents, we can't use our proxy because Microsoft's servers need direct access
               // So we'll show a helpful error with download option
               setError(
+                message ||
                 `Office documents require public file access. ` +
                 `The file is not publicly accessible (${accessibilityError}). ` +
-                `\n\nTo fix this:\n` +
-                `1. Go to Cloudflare Dashboard → R2 → woreda-documents → Settings\n` +
-                `2. Find "Public R2.dev Subdomain" section\n` +
-                `3. Enable: pub-fcc35482a42b44e989b242c288d0d9e1.r2.dev\n` +
-                `4. Wait a few minutes for activation\n\n` +
-                `Alternatively, download the file to view it.`
+                `\n\nPlease ensure your R2 bucket has "Public R2.dev Subdomain" enabled in Cloudflare settings.` +
+                `\n\nAlternatively, download the file to view it.`
               );
               setLoading(false);
               return;
             }
-            
-            console.log("🌐 Constructing Office viewer URL...");
-            
+
+
             // Use Microsoft Office Online Viewer with the public R2 URL
             // Note: publicUrl already has properly encoded path components, so we encode the entire URL
             // for use as a query parameter (this is correct - we're encoding the URL as a whole)
             const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(publicUrl)}`;
-            console.log("🔗 Office viewer URL:", officeViewerUrl);
-            
+
             setViewUrl(officeViewerUrl);
             // Don't set loading to false yet - let the iframe handle it
           })
@@ -99,7 +89,7 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
           }
           return fileUrl;
         };
-        
+
         const proxyUrl = getProxiedUrl();
         setViewUrl(proxyUrl);
         // Loading will be handled by onLoad/onError handlers
@@ -125,29 +115,29 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="relative flex h-full w-full flex-col bg-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md p-4 md:p-8">
+      <div className="relative flex h-full w-full max-w-6xl flex-col overflow-hidden rounded-[32px] bg-white shadow-2xl ring-1 ring-white/10">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-6 py-4">
+        <div className="flex flex-col gap-4 border-b border-slate-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between md:px-8">
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-semibold text-slate-900 truncate">
+            <h2 className="text-lg font-bold text-slate-900 truncate">
               {fileName}
             </h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">
               {fileExtension.toUpperCase()} file
             </p>
           </div>
-          <div className="flex items-center gap-3 ml-4">
+          <div className="flex items-center gap-3 justify-end">
             <button
               onClick={handleDownload}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+              className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-900 transition hover:bg-slate-200"
             >
               <HiArrowDownTray className="h-4 w-4" />
               Download
             </button>
             <button
               onClick={onClose}
-              className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white p-2 text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-900 transition hover:bg-red-50 hover:text-red-600"
             >
               <HiXMark className="h-5 w-5" />
             </button>
@@ -155,12 +145,12 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto bg-slate-100 p-4">
+        <div className="flex-1 overflow-auto bg-slate-50 p-4 md:p-8">
           {loading && !error && (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
                 <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-slate-600"></div>
-                <p className="text-sm text-slate-600">Loading file...</p>
+                <p className="text-sm font-medium text-slate-600">Loading file...</p>
               </div>
             </div>
           )}
@@ -168,23 +158,26 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
           {error && (
             <div className="flex h-full items-center justify-center p-6">
               <div className="text-center max-w-2xl">
-                <p className="text-lg font-semibold text-red-600 mb-3">
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                  <HiXMark className="h-8 w-8 text-red-500" />
+                </div>
+                <p className="text-xl font-bold text-slate-900 mb-3">
                   Unable to View File
                 </p>
-                <div className="text-sm text-slate-700 mb-6 text-left bg-slate-50 p-4 rounded-lg border border-slate-200 whitespace-pre-line">
+                <div className="text-sm text-slate-600 mb-8 text-left bg-white p-6 rounded-2xl border border-slate-200 shadow-sm whitespace-pre-line">
                   {error}
                 </div>
-                <div className="flex gap-3 justify-center">
+                <div className="flex gap-4 justify-center">
                   <button
                     onClick={handleDownload}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                    className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-slate-800"
                   >
                     <HiArrowDownTray className="h-4 w-4" />
                     Download File
                   </button>
                   <button
                     onClick={onClose}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-bold uppercase tracking-wider text-slate-700 transition hover:bg-slate-50"
                   >
                     Close
                   </button>
@@ -194,13 +187,13 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
           )}
 
           {!error && viewUrl && (
-            <div className="h-full w-full">
+            <div className="h-full w-full rounded-2xl overflow-hidden bg-white shadow-sm ring-1 ring-slate-200">
               {isImage && (
                 <div className="flex h-full items-center justify-center p-4">
                   <img
                     src={viewUrl}
                     alt={fileName}
-                    className="max-h-full max-w-full object-contain rounded-lg shadow-lg"
+                    className="max-h-full max-w-full object-contain"
                     onLoad={() => setLoading(false)}
                     onError={() => {
                       setLoading(false);
@@ -224,11 +217,11 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
               )}
 
               {isVideo && (
-                <div className="flex h-full items-center justify-center p-4">
+                <div className="flex h-full items-center justify-center p-4 bg-black">
                   <video
                     src={viewUrl}
                     controls
-                    className="max-h-full max-w-full rounded-lg shadow-lg"
+                    className="max-h-full max-w-full"
                     onLoadedData={() => setLoading(false)}
                     onError={() => {
                       setLoading(false);
@@ -242,7 +235,12 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
 
               {isAudio && (
                 <div className="flex h-full items-center justify-center p-4">
-                  <div className="w-full max-w-2xl">
+                  <div className="w-full max-w-2xl rounded-2xl bg-slate-50 p-8">
+                    <div className="mb-6 flex justify-center">
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                        <HiDocumentText className="h-10 w-10" />
+                      </div>
+                    </div>
                     <audio
                       src={viewUrl}
                       controls
@@ -262,7 +260,7 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
               {isText && (
                 <iframe
                   src={viewUrl}
-                  className="h-full w-full border-0 bg-white"
+                  className="h-full w-full border-0 bg-white p-4"
                   onLoad={() => setLoading(false)}
                   onError={() => {
                     setLoading(false);
@@ -281,7 +279,6 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
                         src={viewUrl}
                         className="h-full w-full border-0 bg-white"
                         onLoad={() => {
-                          console.log("✅ Office viewer iframe loaded");
                           // Office viewer loads asynchronously, wait a bit before hiding loader
                           setTimeout(() => {
                             setLoading(false);
@@ -331,7 +328,7 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
                       </p>
                       <button
                         onClick={handleDownload}
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                        className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-slate-800"
                       >
                         <HiArrowDownTray className="h-4 w-4" />
                         Download File

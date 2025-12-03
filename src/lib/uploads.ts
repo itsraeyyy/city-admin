@@ -10,20 +10,21 @@ export async function uploadDocumentToR2(args: {
   try {
     const uploadUrl = requiredEnv.CLOUDFLARE_R2_UPLOAD_URL();
     const publicUrlBase = requiredEnv.CLOUDFLARE_R2_PUBLIC_URL();
-    
+
     // R2 public URLs format depends on the type:
     // 1. pub-*.r2.dev format: https://pub-ACCOUNT.r2.dev/BUCKET/path
     // 2. BUCKET.*.r2.dev format: https://BUCKET.ACCOUNT.r2.dev/path
     // 3. Custom domain: https://domain.com/path
     const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME || "woreda-documents";
-    
+
     // Construct public URL
     let publicUrl: string;
     if (publicUrlBase.includes('pub-') && publicUrlBase.includes('.r2.dev')) {
-      // Format: https://pub-ACCOUNT.r2.dev/BUCKET/path
-      // The bucket name MUST be in the path for pub-*.r2.dev URLs
+      // Format: https://pub-ACCOUNT.r2.dev/path (bucket-specific subdomain)
+      // Usually "Public R2.dev Subdomain" in Cloudflare maps directly to the bucket root.
+      // So we should NOT append the bucket name.
       const base = publicUrlBase.endsWith('/') ? publicUrlBase.slice(0, -1) : publicUrlBase;
-      publicUrl = `${base}/${bucketName}/${args.folderPath}`;
+      publicUrl = `${base}/${args.folderPath}`;
     } else if (publicUrlBase.includes('.r2.dev') && !publicUrlBase.includes('pub-')) {
       // Format: https://BUCKET.ACCOUNT.r2.dev/path (bucket-specific subdomain)
       publicUrl = publicUrlBase.endsWith('/')
@@ -35,7 +36,7 @@ export async function uploadDocumentToR2(args: {
         ? `${publicUrlBase}${args.folderPath}`
         : `${publicUrlBase}/${args.folderPath}`;
     }
-    
+
     console.log("R2 Public URL Construction:", {
       publicUrlBase,
       bucketName,
@@ -56,7 +57,7 @@ export async function uploadDocumentToR2(args: {
     // Folder structure: woreda-id/category/subcategory/year/filename
     const urlObj = new URL(uploadUrl);
     const endpoint = `https://${urlObj.hostname}`;
-    
+
     // bucketName is already defined above, no need to redeclare
 
     console.log("R2 Upload Details:", {

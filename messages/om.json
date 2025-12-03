@@ -1,0 +1,48 @@
+{
+    "common": {
+        "adminLogin": "Seensa Bulchaa",
+        "download": "Buufadhu",
+        "close": "Cufi",
+        "loading": "Fe'aa jira...",
+        "error": "Dogoggora",
+        "success": "Milkaa'ina"
+    },
+    "hero": {
+        "title": "Walitti qabame, Ifa, Itti gaafatamummaa qabu.",
+        "subtitle": "Aanaa 9 Tajaajila Deskii",
+        "description": "Tajaajila kabajamaa, karoora beekamtii fi qunnamtii itti gaafatamummaa qabu damee barnootaa, fayyaa fi karoora keessatti ni dhiyeessina."
+    },
+    "leaders": {
+        "messageFrom": "Ergaa Bulchaa irraa",
+        "leaders": "hoggantoota"
+    },
+    "documents": {
+        "title": "Galmee",
+        "noDocuments": "Galmeen Hin Argamne",
+        "noDocumentsMessage": "Bulchaan galmee haaraa erga fe'ee booda yeroo gabaabaa keessatti ilaalaa.",
+        "viewFile": "Ilaali",
+        "downloadFile": "Buufadhu",
+        "year": "Bara",
+        "file": "faayilii",
+        "files": "faayiliiwwan"
+    },
+    "access": {
+        "requestAccess": "Hayyama Gaafadhu",
+        "pending": "Eegaa jira",
+        "approved": "Hayyamni Fudhatame",
+        "denied": "Hayyamni Didame",
+        "expired": "Hayyamni Darbee",
+        "viewDocuments": "Galmee Ilaali"
+    },
+    "footer": {
+        "official": "Ofiishaala",
+        "services": "Tajaajilawwan",
+        "contact": "Nu Quunnamaa",
+        "home": "Mana",
+        "documents": "Galmee",
+        "education": "Barnoota",
+        "health": "Fayyaa",
+        "community": "Hawaasa",
+        "copyright": "Bulchiinsa"
+    }
+}

@@ -3,18 +3,20 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.local" });
 
-const PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL;
+const PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL as string;
 const BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET_NAME || "woreda-documents";
 
 if (!PUBLIC_URL) {
   console.error("❌ CLOUDFLARE_R2_PUBLIC_URL is not set in .env.local");
   process.exit(1);
+  // @ts-ignore
+  return;
 }
 
 async function fixR2Urls() {
   try {
     const supabase = getSupabaseAdminClient();
-    
+
     // Get all documents with upload endpoint URLs
     const { data: documents, error: fetchError } = await supabase
       .from("uploads")
@@ -43,31 +45,29 @@ async function fixR2Urls() {
       try {
         // Extract path from upload URL
         const urlObj = new URL(doc.r2_url);
-        const path = urlObj.pathname; // e.g., /woreda-9/000/000/2017/file.docx
-        
-        // Construct new public URL
-        let newUrl: string;
-        if (PUBLIC_URL.includes('pub-') && PUBLIC_URL.includes('.r2.dev')) {
-          // Format: https://pub-ACCOUNT.r2.dev/BUCKET/path
-          // The bucket name MUST be in the path for pub-*.r2.dev URLs
-          const base = PUBLIC_URL.endsWith('/') ? PUBLIC_URL.slice(0, -1) : PUBLIC_URL;
-          newUrl = `${base}/${BUCKET_NAME}${path}`;
-        } else if (PUBLIC_URL.includes('.r2.dev') && !PUBLIC_URL.includes('pub-')) {
-          // Format: https://BUCKET.ACCOUNT.r2.dev/path (bucket-specific subdomain)
-          const base = PUBLIC_URL.endsWith('/') ? PUBLIC_URL.slice(0, -1) : PUBLIC_URL;
-          newUrl = `${base}${path}`;
-        } else {
-          // Custom domain or other format
-          const base = PUBLIC_URL.endsWith('/') ? PUBLIC_URL.slice(0, -1) : PUBLIC_URL;
-          newUrl = `${base}${path}`;
+        let path = urlObj.pathname; // e.g., /woreda-9/000/000/2017/file.docx
+
+        // Remove leading slash if present
+        if (path.startsWith('/')) {
+          path = path.substring(1);
         }
-        
+
+        // Remove bucket name from path if it starts with it
+        if (path.startsWith(BUCKET_NAME + '/')) {
+          path = path.substring(BUCKET_NAME.length + 1);
+        }
+
+        // Construct new public URL
+        // We assume PUBLIC_URL points to the root of the bucket
+        const base = PUBLIC_URL.endsWith('/') ? PUBLIC_URL.slice(0, -1) : PUBLIC_URL;
+        const newUrl = `${base}/${path}`;
+
         console.log(`\n📄 Processing: ${doc.file_name}`);
         console.log(`   Old URL: ${doc.r2_url}`);
         console.log(`   Path: ${path}`);
         console.log(`   New URL: ${newUrl}`);
         console.log(`   Match: ${newUrl === doc.r2_url ? 'YES (will skip)' : 'NO (will update)'}`);
-        
+
         // Only update if the URL is actually different
         if (newUrl === doc.r2_url) {
           console.log(`   ⚠️  Skipped (URL unchanged)\n`);
@@ -106,4 +106,3 @@ async function fixR2Urls() {
 }
 
 fixR2Urls();
-

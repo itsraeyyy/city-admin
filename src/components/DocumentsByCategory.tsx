@@ -2,31 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { HiDocumentArrowDown, HiEye, HiChevronDown, HiChevronRight } from "react-icons/hi2";
+import { HiDocumentArrowDown, HiEye, HiChevronDown, HiChevronRight, HiFolder, HiDocumentText } from "react-icons/hi2";
 import type { DocumentUploadRecord } from "@/types";
 import { documentCategories } from "@/data/categories";
 import { FileViewer } from "./FileViewer";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DocumentsByCategoryProps {
   documents: DocumentUploadRecord[];
   accessToken?: string;
 }
-
-const findCategoryLabel = (categoryId?: string): string => {
-  const category = documentCategories.find((item) => item.id === categoryId);
-  return category?.label ?? "General";
-};
-
-const findSubcategoryLabel = (
-  categoryId?: string,
-  subcategoryCode?: string
-): string => {
-  const category = documentCategories.find((item) => item.id === categoryId);
-  const subcategory = category?.subcategories.find(
-    (child) => child.code === subcategoryCode
-  );
-  return subcategory?.label ?? "Document";
-};
 
 export function DocumentsByCategory({ documents, accessToken }: DocumentsByCategoryProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
@@ -91,15 +76,20 @@ export function DocumentsByCategory({ documents, accessToken }: DocumentsByCateg
 
   if (sortedCategories.length === 0) {
     return (
-      <p className="rounded-3xl border border-slate-200 bg-white/80 p-8 text-slate-600">
-        No documents have been published yet. Please check back shortly after the
-        administrator uploads new records.
-      </p>
+      <div className="rounded-[32px] bg-white p-12 text-center shadow-xl">
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+          <HiFolder className="h-8 w-8 text-slate-400" />
+        </div>
+        <h3 className="text-lg font-bold text-slate-900">No Documents Found</h3>
+        <p className="mt-2 text-slate-500">
+          Please check back shortly after the administrator uploads new records.
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {sortedCategories.map((category) => {
         const categoryDocs = groupedByCategory[category.id];
         const isCategoryExpanded = expandedCategories.has(category.id);
@@ -109,143 +99,176 @@ export function DocumentsByCategory({ documents, accessToken }: DocumentsByCateg
         );
 
         return (
-          <div
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             key={category.id}
-            className="rounded-[28px] border border-slate-200 bg-white/80 shadow-[0_30px_90px_rgba(15,23,42,0.08)] overflow-hidden"
+            className="overflow-hidden rounded-[32px] bg-white shadow-lg transition-shadow hover:shadow-xl"
           >
             <button
               onClick={() => toggleCategory(category.id)}
-              className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-50/50 transition"
+              className="flex w-full items-center justify-between p-6 text-left transition hover:bg-slate-50/50 md:p-8"
             >
-              <div className="flex items-center gap-4">
-                {isCategoryExpanded ? (
-                  <HiChevronDown className="h-5 w-5 text-slate-500 flex-shrink-0" />
-                ) : (
-                  <HiChevronRight className="h-5 w-5 text-slate-500 flex-shrink-0" />
-                )}
+              <div className="flex items-center gap-6">
+                <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl transition-colors ${isCategoryExpanded ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600'}`}>
+                  {isCategoryExpanded ? (
+                    <HiChevronDown className="h-6 w-6" />
+                  ) : (
+                    <HiChevronRight className="h-6 w-6" />
+                  )}
+                </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 md:text-2xl">
                     {category.id} - {category.label}
                   </h2>
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400 mt-1">
+                  <p className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-400">
                     {totalDocsInCategory} document{totalDocsInCategory !== 1 ? "s" : ""}
                   </p>
                 </div>
               </div>
             </button>
 
-            {isCategoryExpanded && (
-              <div className="border-t border-slate-200 bg-slate-50/30">
-                {category.subcategories
-                  .filter((subcat) => categoryDocs[subcat.code])
-                  .map((subcategory) => {
-                    const subcategoryDocs = categoryDocs[subcategory.code];
-                    const subcategoryKey = `${category.id}-${subcategory.code}`;
-                    const isSubcategoryExpanded = expandedSubcategories.has(
-                      subcategoryKey
-                    );
+            <AnimatePresence>
+              {isCategoryExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <div className="border-t border-slate-100 bg-slate-50/50 p-2 md:p-4">
+                    {category.subcategories
+                      .filter((subcat) => categoryDocs[subcat.code])
+                      .map((subcategory) => {
+                        const subcategoryDocs = categoryDocs[subcategory.code];
+                        const subcategoryKey = `${category.id}-${subcategory.code}`;
+                        const isSubcategoryExpanded = expandedSubcategories.has(
+                          subcategoryKey
+                        );
 
-                    // Group documents by year within subcategory
-                    const docsByYear = subcategoryDocs.reduce<
-                      Record<string, DocumentUploadRecord[]>
-                    >((acc, doc) => {
-                      if (!acc[doc.year]) {
-                        acc[doc.year] = [];
-                      }
-                      acc[doc.year].push(doc);
-                      return acc;
-                    }, {});
+                        // Group documents by year within subcategory
+                        const docsByYear = subcategoryDocs.reduce<
+                          Record<string, DocumentUploadRecord[]>
+                        >((acc, doc) => {
+                          if (!acc[doc.year]) {
+                            acc[doc.year] = [];
+                          }
+                          acc[doc.year].push(doc);
+                          return acc;
+                        }, {});
 
-                    const sortedYears = Object.keys(docsByYear).sort(
-                      (a, b) => parseInt(b) - parseInt(a)
-                    );
+                        const sortedYears = Object.keys(docsByYear).sort(
+                          (a, b) => parseInt(b) - parseInt(a)
+                        );
 
-                    return (
-                      <div
-                        key={subcategory.code}
-                        className="border-b border-slate-200 last:border-b-0"
-                      >
-                        <button
-                          onClick={() => toggleSubcategory(subcategoryKey)}
-                          className="w-full flex items-center justify-between p-4 pl-12 text-left hover:bg-slate-50/50 transition"
-                        >
-                          <div className="flex items-center gap-3">
-                            {isSubcategoryExpanded ? (
-                              <HiChevronDown className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                            ) : (
-                              <HiChevronRight className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                            )}
-                            <div>
-                              <h3 className="text-base font-medium text-slate-800">
-                                {subcategory.code} – {subcategory.label}
-                              </h3>
-                              <p className="text-xs text-slate-500 mt-0.5">
-                                {subcategoryDocs.length} file
-                                {subcategoryDocs.length !== 1 ? "s" : ""}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
-
-                        {isSubcategoryExpanded && (
-                          <div className="bg-white/50 pl-16 pr-4 pb-4">
-                            <div className="space-y-3 pt-2">
-                              {sortedYears.map((year) => (
-                                <div key={year} className="space-y-2">
-                                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500 mb-2">
-                                    Year {year}
+                        return (
+                          <div
+                            key={subcategory.code}
+                            className="mb-2 overflow-hidden rounded-3xl bg-white border border-slate-100 last:mb-0"
+                          >
+                            <button
+                              onClick={() => toggleSubcategory(subcategoryKey)}
+                              className="flex w-full items-center justify-between p-4 pl-6 text-left transition hover:bg-slate-50"
+                            >
+                              <div className="flex items-center gap-4">
+                                {isSubcategoryExpanded ? (
+                                  <HiChevronDown className="h-4 w-4 text-slate-400" />
+                                ) : (
+                                  <HiChevronRight className="h-4 w-4 text-slate-400" />
+                                )}
+                                <div>
+                                  <h3 className="text-base font-bold text-slate-800">
+                                    {subcategory.code} – {subcategory.label}
+                                  </h3>
+                                  <p className="text-xs font-medium text-slate-500">
+                                    {subcategoryDocs.length} file
+                                    {subcategoryDocs.length !== 1 ? "s" : ""}
                                   </p>
-                                  <div className="grid gap-2 md:grid-cols-2">
-                                    {docsByYear[year].map((document) => (
-                                      <article
-                                        key={document.id}
-                                        className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 hover:border-slate-300 transition"
-                                      >
-                                        <div className="flex-1 min-w-0">
-                                          <p className="text-sm font-medium text-slate-900 truncate">
-                                            {document.file_name}
+                                </div>
+                              </div>
+                            </button>
+
+                            <AnimatePresence>
+                              {isSubcategoryExpanded && (
+                                <motion.div
+                                  initial={{ height: 0 }}
+                                  animate={{ height: "auto" }}
+                                  exit={{ height: 0 }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="space-y-6 p-6 pt-2">
+                                    {sortedYears.map((year) => (
+                                      <div key={year} className="space-y-3">
+                                        <div className="flex items-center gap-2">
+                                          <div className="h-px flex-1 bg-slate-100"></div>
+                                          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                                            Year {year}
                                           </p>
-                                          <p className="text-xs text-slate-500 mt-0.5">
-                                            {year}
-                                          </p>
+                                          <div className="h-px flex-1 bg-slate-100"></div>
                                         </div>
-                                        <div className="ml-3 flex-shrink-0 flex items-center gap-2">
-                                          <button
-                                            onClick={() =>
-                                              setViewingFile({
-                                                url: document.r2_url,
-                                                name: document.file_name,
-                                              })
-                                            }
-                                            className="inline-flex items-center gap-1.5 rounded-lg border border-blue-300 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:border-blue-400 hover:bg-blue-100"
-                                          >
-                                            <HiEye className="h-3.5 w-3.5" />
-                                            View
-                                          </button>
-                                          <Link
-                                            href={document.r2_url}
-                                            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100"
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            <HiDocumentArrowDown className="h-3.5 w-3.5" />
-                                            Download
-                                          </Link>
+                                        <div className="grid gap-3 md:grid-cols-2">
+                                          {docsByYear[year].map((document) => (
+                                            <motion.article
+                                              whileHover={{ y: -2, scale: 1.01 }}
+                                              key={document.id}
+                                              className="group flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:border-blue-200 hover:shadow-md sm:flex-row sm:items-center sm:justify-between"
+                                            >
+                                              <div className="flex items-start gap-3 min-w-0 w-full">
+                                                <div className="mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                                  <HiDocumentText className="h-5 w-5" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                  <p className="text-sm font-bold text-slate-900 break-words leading-tight" title={document.file_name}>
+                                                    {document.file_name}
+                                                  </p>
+                                                  <p className="text-xs text-slate-500 mt-1 uppercase font-medium">
+                                                    {year} • {document.file_name.split('.').pop() || 'FILE'}
+                                                  </p>
+                                                </div>
+                                              </div>
+
+                                              <div className="flex items-center gap-2 w-full sm:w-auto sm:flex-shrink-0">
+                                                <button
+                                                  onClick={() =>
+                                                    setViewingFile({
+                                                      url: document.r2_url,
+                                                      name: document.file_name,
+                                                    })
+                                                  }
+                                                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
+                                                  title="View"
+                                                >
+                                                  <HiEye className="h-4 w-4" />
+                                                  <span className="sm:hidden">View</span>
+                                                </button>
+                                                <Link
+                                                  href={document.r2_url}
+                                                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                  title="Download"
+                                                >
+                                                  <HiDocumentArrowDown className="h-4 w-4" />
+                                                  <span className="sm:hidden">Download</span>
+                                                </Link>
+                                              </div>
+                                            </motion.article>
+                                          ))}
                                         </div>
-                                      </article>
+                                      </div>
                                     ))}
                                   </div>
-                                </div>
-                              ))}
-                            </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
-            )}
-          </div>
+                        );
+                      })}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         );
       })}
 
