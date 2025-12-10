@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { HiHome, HiQrCode, HiDocumentArrowUp, HiDocumentText, HiLockClosed, HiArrowRightOnRectangle, HiUserCircle, HiChartBar } from "react-icons/hi2";
+import { HiHome, HiQrCode, HiDocumentArrowUp, HiDocumentText, HiLockClosed, HiArrowRightOnRectangle, HiUserCircle, HiChartBar, HiCalendar } from "react-icons/hi2";
 import { useTranslations } from 'next-intl';
 import { motion } from "framer-motion";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
@@ -14,6 +15,7 @@ const navItems = [
   { href: "/admin/documents", label: "documents", icon: HiDocumentText },
   { href: "/admin/qr-generator", label: "generateQR", icon: HiQrCode },
   { href: "/admin/requests", label: "qrRequests", icon: HiQrCode },
+  { href: "/admin/appointments", label: "appointments", icon: HiCalendar },
 ];
 
 export function Sidebar() {
@@ -41,8 +43,14 @@ export function Sidebar() {
         <div className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-br from-blue-50 via-white to-purple-50">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-purple-600/5" />
           <div className="relative flex h-20 items-center gap-4 px-6">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
-              <HiLockClosed className="h-6 w-6 text-white" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl overflow-hidden shadow-lg">
+              <Image
+                src="/logo.jpg"
+                alt="Logo"
+                width={48}
+                height={48}
+                className="object-cover"
+              />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-slate-900 truncate">

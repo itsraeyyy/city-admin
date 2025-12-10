@@ -43,30 +43,19 @@ export default function AdminLoginPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-[#4169E1] to-purple-900 opacity-90" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
 
-        <div className="relative z-10 p-12 text-white max-w-lg">
-          <div className="mb-8 h-20 w-20 rounded-2xl bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20">
-            <HiLockClosed className="h-10 w-10 text-white" />
+        <div className="relative z-10 p-12 text-white max-w-lg text-center">
+          <div className="mb-8 h-48 w-48 mx-auto rounded-3xl bg-white/10 backdrop-blur-xl flex items-center justify-center border border-white/20 overflow-hidden">
+            <Image
+              src="/logo.jpg"
+              alt="Logo"
+              width={192}
+              height={192}
+              className="object-cover"
+            />
           </div>
-          <h1 className="text-5xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl font-bold leading-tight">
             {t('secureAdminPortal')}
           </h1>
-          <p className="text-lg text-blue-100 leading-relaxed">
-            {t('adminDescription')}
-          </p>
-
-          <div className="mt-12 flex gap-4">
-            <div className="flex -space-x-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-10 w-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-xs font-bold">
-                  {String.fromCharCode(64 + i)}
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-col justify-center">
-              <span className="text-sm font-bold">{t('secureAccess')}</span>
-              <span className="text-xs text-blue-200">{t('authorizedOnly')}</span>
-            </div>
-          </div>
         </div>
 
         {/* Decorative Circles */}

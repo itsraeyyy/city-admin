@@ -1,11 +1,11 @@
 "use client";
 
-import { HiDocumentArrowUp, HiDocumentText, HiQrCode, HiChartBar } from "react-icons/hi2";
+import { HiDocumentArrowUp, HiDocumentText, HiQrCode, HiChartBar, HiCalendar } from "react-icons/hi2";
 import { useTranslations } from 'next-intl';
 import { motion } from "framer-motion";
 
 interface AdminPageHeaderProps {
-  icon: "upload" | "documents" | "qr" | "requests" | "dashboard";
+  icon: "upload" | "documents" | "qr" | "requests" | "dashboard" | "appointments";
   titleKey: string;
   descriptionKey: string;
   gradient: string;
@@ -17,6 +17,7 @@ const iconMap = {
   qr: HiQrCode,
   requests: HiQrCode,
   dashboard: HiChartBar,
+  appointments: HiCalendar,
 };
 
 export function AdminPageHeader({ icon, titleKey, descriptionKey, gradient }: AdminPageHeaderProps) {

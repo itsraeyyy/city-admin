@@ -50,6 +50,8 @@
         "viewDocumentsDescription": "Browse and manage all uploaded documents",
         "qrRequests": "QR Access Requests",
         "qrRequestsDescription": "Review and approve QR code access requests",
+        "appointments": "Appointments",
+        "appointmentsDescription": "Manage appointment requests. Accept, reject, or reschedule appointments with reasons.",
         "generateQRDescription": "Generate QR codes for document access requests. Download and print these codes for physical distribution",
         "generateNewQR": "Generate New QR Code",
         "requestCode": "Request Code",

@@ -4,13 +4,21 @@ import { publicEnv, requiredEnv } from "./env";
 
 /**
  * Get a Supabase client for server-side operations that respects the user's session
+ * Uses the anon key to properly read user authentication from cookies
  */
 export async function getSupabaseServerClient() {
   const cookieStore = await cookies();
 
+  const supabaseUrl = publicEnv.NEXT_PUBLIC_SUPABASE_URL || requiredEnv.SUPABASE_URL();
+  const supabaseAnonKey = publicEnv.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseAnonKey) {
+    throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY is required but not set");
+  }
+
   const supabase = createServerClient(
-    requiredEnv.SUPABASE_URL(),
-    requiredEnv.SUPABASE_SERVICE_ROLE_KEY(),
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -65,10 +73,17 @@ export async function getCurrentUser() {
     const supabase = await getSupabaseServerClient();
     const {
       data: { user },
+      error,
     } = await supabase.auth.getUser();
 
+    if (error) {
+      console.error("Error getting user:", error);
+      return null;
+    }
+
     return user;
-  } catch {
+  } catch (error) {
+    console.error("Exception in getCurrentUser:", error);
     return null;
   }
 }

@@ -55,4 +55,24 @@ export interface DocumentUploadRecord {
   created_at: string;
 }
 
+export interface AppointmentRecord {
+  id: string;
+  woreda_id: string;
+  unique_code: string;
+  requester_name: string;
+  requester_email?: string;
+  requester_phone?: string;
+  reason: string;
+  requested_date_ethiopian: string;
+  requested_date_gregorian?: string;
+  requested_time?: string;
+  status: "pending" | "accepted" | "rejected" | "rescheduled";
+  admin_reason?: string;
+  rescheduled_date_ethiopian?: string;
+  rescheduled_date_gregorian?: string;
+  rescheduled_time?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 

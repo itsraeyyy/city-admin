@@ -22,7 +22,7 @@ export function Footer({ woredaName }: FooterProps) {
         </div>
 
         <div className="text-xs text-slate-400">
-          © {new Date().getFullYear()} {t('allRightsReserved')}
+          © 2018 {t('allRightsReserved')}
         </div>
       </div>
     </footer>

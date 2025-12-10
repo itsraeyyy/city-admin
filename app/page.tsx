@@ -25,7 +25,7 @@ export default function Home() {
         <div className="min-h-screen bg-white">
             {/* Professional Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
-                <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+                <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-6 py-2 md:py-4">
                     <div className="flex items-center gap-3">
                         <div className="relative h-10 w-10 overflow-hidden rounded-lg">
                             <Image
@@ -41,6 +41,19 @@ export default function Home() {
                                 {publicEnv.NEXT_PUBLIC_WOREDA_NAME}
                             </span>
                             <span className="block text-xs text-slate-500">{t('common.officialPortal')}</span>
+                            {/* Motto - Mobile */}
+                            <span className="md:hidden block text-xs font-semibold bg-gradient-to-r from-[#4169E1] to-purple-600 bg-clip-text text-transparent mt-0.5">
+                                ጠንካራ ኮሚሽን ለጠንካራ ፖርቲ !
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Motto - Desktop Centered */}
+                    <div className="hidden md:flex items-center">
+                        <div className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100/50">
+                            <p className="text-sm font-bold bg-gradient-to-r from-[#4169E1] to-purple-600 bg-clip-text text-transparent">
+                                ጠንካራ ኮሚሽን ለጠንካራ ፖርቲ !
+                            </p>
                         </div>
                     </div>
 
@@ -59,7 +72,7 @@ export default function Home() {
             </nav>
 
             {/* Hero Section - Enhanced Design */}
-            <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 pt-20">
+            <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 pt-24 md:pt-20">
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <Image
@@ -127,12 +140,13 @@ export default function Home() {
                                 <HiArrowDown className="h-5 w-5 transition-transform group-hover:translate-y-1" />
                             </button>
 
-                            <button
-                                onClick={() => scrollToSection('message')}
-                                className="inline-flex items-center gap-2 rounded-full border-2 border-slate-300 bg-white/90 backdrop-blur-sm px-8 py-4 text-base font-semibold text-slate-700 transition-all hover:border-[#4169E1] hover:text-[#4169E1] hover:bg-white hover:shadow-lg"
+                            <Link
+                                href="/appointments"
+                                className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-4 text-base font-semibold text-white shadow-xl transition-all hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-2xl"
                             >
-                                {t('hero.leadersMessage')}
-                            </button>
+                                {t('hero.appointment')}
+                                <HiArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </Link>
                         </motion.div>
                     </motion.div>
                 </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { HiQrCode, HiDocumentArrowUp, HiDocumentText, HiCheckCircle, HiClock, HiShieldCheck, HiArrowRight, HiXCircle } from "react-icons/hi2";
 import { useTranslations } from 'next-intl';
 import { motion } from "framer-motion";
@@ -68,8 +69,14 @@ export function DashboardClient({
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-3xl backdrop-blur-sm border border-white/20 p-8">
                 <div className="h-full w-full bg-white/10 rounded-2xl flex items-center justify-center">
                   <div className="text-center space-y-4">
-                    <div className="mx-auto w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border-4 border-white/30">
-                      <HiShieldCheck className="h-12 w-12 text-white" />
+                    <div className="mx-auto w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border-4 border-white/30 overflow-hidden">
+                      <Image
+                        src="/logo.jpg"
+                        alt="Logo"
+                        width={96}
+                        height={96}
+                        className="object-cover"
+                      />
                     </div>
                     <div className="space-y-2">
                       <div className="h-2 bg-white/30 rounded-full w-32 mx-auto" />

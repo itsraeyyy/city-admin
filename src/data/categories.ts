@@ -203,7 +203,7 @@ export const documentCategories: DocumentCategory[] = [
     subcategories: [
       { id: "8100", label: "የከተማ ኮምሽን አመራር", code: "8100" },
       { id: "8200", label: "የክፍለ ከተማ ኮምሽን አመራሮች", code: "8200" },
-      { id: "8300", label: "የወረዳ ኮምሽን አመራሮች", code: "8300" },
+      { id: "8300", label: "የከተማ ኮምሽን አመራሮች", code: "8300" },
     ],
   },
   {

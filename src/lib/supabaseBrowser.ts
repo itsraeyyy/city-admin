@@ -1,6 +1,7 @@
 "use client";
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { publicEnv } from "./env";
 
 let supabaseBrowserClient: SupabaseClient | null = null;
@@ -18,9 +19,11 @@ function getSupabaseBrowserClient(): SupabaseClient {
     );
   }
 
-  supabaseBrowserClient = createClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, {
-    auth: { persistSession: true },
-  });
+  // Use createBrowserClient from @supabase/ssr to store session in cookies
+  supabaseBrowserClient = createBrowserClient(
+    NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
   return supabaseBrowserClient;
 }
