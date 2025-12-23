@@ -29,11 +29,7 @@ export async function DELETE(request: Request) {
             );
         }
 
-        // Also delete any associated temporary access records
-        await supabase
-            .from("temporary_access")
-            .delete()
-            .eq("qr_request_id", requestId);
+
 
         return NextResponse.json({ success: true });
     } catch (error) {

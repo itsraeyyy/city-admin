@@ -67,50 +67,78 @@ export function CommissionMembers({ categories }: CommissionMembersProps) {
     };
 
     return (
-        <section id="members" className="relative py-12 md:py-24 space-y-20 scroll-mt-32 overflow-hidden">
+        <section id="members" className="relative py-20 md:py-32 space-y-24 scroll-mt-32 overflow-hidden bg-slate-50/50">
             {/* Branded background reusing hero image behind members */}
             <div className="absolute inset-0 -z-10">
                 <Image
                     src="/herobg.png"
                     alt="Background"
                     fill
-                    className="object-cover object-left opacity-25"
+                    className="object-cover object-left opacity-[0.03]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/85 to-white" />
+                <div className="absolute inset-0 bg-gradient-to-b from-white via-white/80 to-slate-50/50" />
             </div>
+
             <div className="mx-auto max-w-7xl px-6 relative z-10">
-                <div className="text-center space-y-4 mb-16">
-                    <h2 className="text-4xl font-bold text-slate-900 leading-tight">
+                <div className="text-center space-y-6 mb-20 max-w-3xl mx-auto">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-blue-50 border border-blue-100/50 text-blue-600 text-sm font-semibold tracking-wide"
+                    >
+                        <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+                        {t('leaders.meetTheLeaders')}
+                    </motion.div>
+
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-4xl md:text-5xl font-bold text-slate-900 leading-[1.1] tracking-tight"
+                    >
                         {t('leaders.membersSubtitle')}
-                    </h2>
+                    </motion.h2>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                        className="h-1.5 w-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto"
+                    />
                 </div>
 
-                <div className="space-y-16">
+                <div className="space-y-24">
                     {categories.map((category, catIdx) => (
-                        <div key={category.id} className="space-y-6">
-                            <div className="flex items-center gap-4 px-4">
-                                <div className="h-10 w-1 bg-gradient-to-b from-blue-600 to-purple-600 rounded-full" />
-                                <div>
-                                    <h3 className="text-2xl md:text-3xl font-bold text-slate-900">{getCategoryTitle(category.id)}</h3>
+                        <div key={category.id} className="space-y-8">
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                className="flex items-end gap-6 px-4 pb-4 border-b border-slate-200"
+                            >
+                                <div className="space-y-1">
+                                    <h3 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">{getCategoryTitle(category.id)}</h3>
                                     {category.id === "commission-committee" && (
-                                        <p className="text-sm text-slate-500 mt-1">{t('leaders.commissionCommitteeCount')}</p>
+                                        <p className="text-sm font-medium text-slate-500">{t('leaders.commissionCommitteeCount')}</p>
                                     )}
                                 </div>
-                            </div>
+                            </motion.div>
 
                             {/* Slider Container */}
                             <div className="relative group">
                                 {/* Navigation Buttons */}
                                 <button
                                     onClick={() => scrollSlider(`slider-${category.id}`, "left")}
-                                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-4 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg text-slate-700 transition-all hover:bg-blue-50 hover:text-blue-600 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500/20 opacity-0 group-hover:opacity-100"
+                                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 -ml-5 md:-ml-8 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-xl border border-slate-100 text-slate-700 transition-all hover:bg-blue-600 hover:text-white hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-500/20 opacity-0 group-hover:opacity-100"
                                     aria-label="Scroll left"
                                 >
                                     <HiChevronLeft className="h-6 w-6" />
                                 </button>
                                 <button
                                     onClick={() => scrollSlider(`slider-${category.id}`, "right")}
-                                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-4 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-lg text-slate-700 transition-all hover:bg-blue-50 hover:text-blue-600 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500/20 opacity-0 group-hover:opacity-100"
+                                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 -mr-5 md:-mr-8 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-xl border border-slate-100 text-slate-700 transition-all hover:bg-blue-600 hover:text-white hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-500/20 opacity-0 group-hover:opacity-100"
                                     aria-label="Scroll right"
                                 >
                                     <HiChevronRight className="h-6 w-6" />
@@ -119,39 +147,47 @@ export function CommissionMembers({ categories }: CommissionMembersProps) {
                                 {/* Scrollable Area */}
                                 <div
                                     id={`slider-${category.id}`}
-                                    className="flex overflow-x-auto pb-8 pt-4 gap-6 px-4 snap-x snap-mandatory no-scrollbar scroll-smooth"
+                                    className="flex overflow-x-auto pb-12 pt-4 gap-8 px-4 snap-x snap-mandatory no-scrollbar scroll-smooth"
                                 >
                                     {category.leaders.map((leader, idx) => (
                                         <motion.div
-                                            key={leader.name}
-                                            initial={{ opacity: 0, x: 20 }}
-                                            whileInView={{ opacity: 1, x: 0 }}
+                                            key={`${leader.name}-${idx}`}
+                                            initial={{ opacity: 0, y: 30 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
                                             viewport={{ once: true }}
-                                            transition={{ delay: idx * 0.1 }}
-                                            className="flex-none w-72 snap-center"
+                                            transition={{ delay: idx * 0.1, duration: 0.5 }}
+                                            className="flex-none w-72 md:w-80 snap-center relative"
                                         >
-                                            <div className="group/card relative overflow-hidden rounded-3xl bg-white p-4 shadow-lg transition-all hover:-translate-y-2 hover:shadow-xl border border-slate-100 h-full">
-                                                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-slate-100 mb-4">
+                                            <div className="group/card h-full bg-white rounded-[2rem] p-3 shadow-sm hover:shadow-2xl hover:shadow-blue-900/10 transition-all duration-500 border border-slate-100 hover:border-blue-100 hover:-translate-y-2">
+                                                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.5rem] bg-slate-100 mb-5">
                                                     {leader.photo ? (
                                                         <Image
                                                             src={leader.photo}
                                                             alt={leader.name}
                                                             fill
-                                                            className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+                                                            className="object-cover transition-transform duration-700 group-hover/card:scale-110"
                                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                         />
                                                     ) : (
                                                         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-                                                            <HiUser className="h-20 w-20 text-slate-300" />
+                                                            <HiUser className="h-24 w-24 text-slate-300" />
                                                         </div>
                                                     )}
-                                                    <div className="absolute inset-0 bg-blue-600/10 opacity-0 transition-opacity group-hover/card:opacity-100" />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" />
+
+                                                    {/* Social/Role overlay on hover */}
+                                                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full transition-transform duration-300 group-hover/card:translate-y-0">
+                                                        <p className="text-white text-sm font-medium leading-tight opacity-90 backdrop-blur-sm bg-white/10 p-2 rounded-lg border border-white/10">
+                                                            {getMemberTitle(leader.title)}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div className="text-center">
-                                                    <h4 className="text-lg font-bold text-slate-900 group-hover/card:text-blue-600 transition-colors">
+
+                                                <div className="px-2 pb-2 text-center">
+                                                    <h4 className="text-xl font-bold text-slate-900 group-hover/card:text-blue-600 transition-colors mb-1.5 line-clamp-1">
                                                         {leader.name}
                                                     </h4>
-                                                    <p className="text-sm font-medium text-slate-500">
+                                                    <p className="text-sm font-medium text-slate-500 line-clamp-2 h-10 leading-relaxed">
                                                         {getMemberTitle(leader.title)}
                                                     </p>
                                                 </div>
@@ -160,9 +196,9 @@ export function CommissionMembers({ categories }: CommissionMembersProps) {
                                     ))}
                                 </div>
 
-                                {/* Fade edges */}
-                                <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-                                <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                                {/* Fade edges/gradient for scroll cue */}
+                                <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none md:block hidden" />
+                                <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none md:block hidden" />
                             </div>
                         </div>
                     ))}

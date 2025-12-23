@@ -151,7 +151,7 @@ export async function getDocumentsForWoreda(
 ): Promise<DocumentUploadRecord[]> {
   const supabase = await getSupabaseServerClient();
   const { data } = await supabase
-    .from("uploads")
+    .from("document_uploads")
     .select("*")
     .eq("woreda_id", woredaId)
     .order("year", { ascending: false })
