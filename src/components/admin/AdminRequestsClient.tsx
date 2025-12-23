@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { HiQrCode, HiCheckCircle, HiClock, HiTrash, HiXCircle } from "react-icons/hi2";
 import { ApproveRequestButton } from "@/components/admin/ApproveRequestButton";
+import { DenyRequestButton } from "@/components/admin/DenyRequestButton";
 import { useTranslations } from 'next-intl';
 import { motion } from "framer-motion";
 import type { QrRequestRecord } from "@/types";
@@ -152,8 +153,8 @@ export function AdminRequestsClient({ requests }: AdminRequestsClientProps) {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.05 }}
                                     className={`group flex flex-col gap-4 rounded-2xl border-2 p-6 transition-all ${isSelected
-                                            ? 'border-blue-400 bg-blue-50/50 shadow-md'
-                                            : 'border-slate-200 bg-white hover:border-blue-300 hover:shadow-lg'
+                                        ? 'border-blue-400 bg-blue-50/50 shadow-md'
+                                        : 'border-slate-200 bg-white hover:border-blue-300 hover:shadow-lg'
                                         }`}
                                 >
                                     <div className="flex items-start gap-4">
@@ -169,10 +170,10 @@ export function AdminRequestsClient({ requests }: AdminRequestsClientProps) {
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-3 mb-2">
                                                         <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${request.status === "approved"
-                                                                ? "bg-emerald-50 text-emerald-600"
-                                                                : request.status === "denied"
-                                                                    ? "bg-red-50 text-red-600"
-                                                                    : "bg-amber-50 text-amber-600"
+                                                            ? "bg-emerald-50 text-emerald-600"
+                                                            : request.status === "denied"
+                                                                ? "bg-red-50 text-red-600"
+                                                                : "bg-amber-50 text-amber-600"
                                                             }`}>
                                                             {request.status === "approved" ? (
                                                                 <HiCheckCircle className="h-5 w-5" />
@@ -193,10 +194,10 @@ export function AdminRequestsClient({ requests }: AdminRequestsClientProps) {
 
                                                 <span
                                                     className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider whitespace-nowrap ${request.status === "approved"
-                                                            ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                                                            : request.status === "denied"
-                                                                ? "bg-red-100 text-red-700 border border-red-200"
-                                                                : "bg-amber-100 text-amber-700 border border-amber-200"
+                                                        ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                                                        : request.status === "denied"
+                                                            ? "bg-red-100 text-red-700 border border-red-200"
+                                                            : "bg-amber-100 text-amber-700 border border-amber-200"
                                                         }`}
                                                 >
                                                     {request.status === "approved" ? (
@@ -211,8 +212,9 @@ export function AdminRequestsClient({ requests }: AdminRequestsClientProps) {
                                             </div>
 
                                             {request.status === "pending" && (
-                                                <div className="mt-4 pt-4 border-t border-slate-100">
+                                                <div className="mt-4 pt-4 border-t border-slate-100 flex items-center gap-3">
                                                     <ApproveRequestButton requestId={request.id} />
+                                                    <DenyRequestButton requestId={request.id} />
                                                 </div>
                                             )}
                                         </div>

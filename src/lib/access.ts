@@ -19,7 +19,27 @@ export async function recordQrAccessRequest(args: {
     return null;
   }
 
-  console.log("📝 Recording QR request:", { code, ipAddress, woredaId });
+  // First, check if a request with this code already exists
+  const { data: existingRequest, error: fetchError } = await supabase
+    .from("qr_requests")
+    .select("*")
+    .eq("code", code)
+    .eq("woreda_id", woredaId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("❌ Error checking existing QR request:", fetchError);
+  }
+
+  // If request already exists, return it instead of creating duplicate
+  if (existingRequest) {
+    console.log("ℹ️ QR request already exists:", existingRequest.id);
+    return existingRequest;
+  }
+
+  console.log("📝 Recording new QR request:", { code, ipAddress, woredaId });
 
   const { data, error } = await supabase
     .from("qr_requests")
@@ -46,6 +66,7 @@ export async function recordQrAccessRequest(args: {
   console.log("✅ QR request recorded successfully:", data?.id);
   return data;
 }
+
 
 export async function listRecentQrRequests(
   limit = 10
@@ -121,7 +142,37 @@ export async function approveAccessRequest(requestId: string): Promise<{
   }
 }
 
+export async function denyAccessRequest(requestId: string): Promise<{
+  success?: boolean;
+  error?: string;
+}> {
+  try {
+    const supabase = await getSupabaseServerClient();
+
+    const { error: updateError } = await supabase
+      .from("qr_requests")
+      .update({
+        status: "denied",
+      })
+      .eq("id", requestId);
+
+    if (updateError) {
+      console.error("❌ Error denying QR request:", updateError);
+      return { error: updateError.message };
+    }
+
+    console.log("✅ Request denied successfully:", requestId);
+    return { success: true };
+  } catch (error) {
+    console.error("❌ Unexpected error denying request:", error);
+    return {
+      error: error instanceof Error ? error.message : "Unknown error"
+    };
+  }
+}
+
 export async function getQrRequestByCode(
+
   code: string
 ): Promise<QrRequestRecord | null> {
   const supabase = await getSupabaseServerClient();

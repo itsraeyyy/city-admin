@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { parseEthiopianDate, ethiopianToGregorian } from "@/lib/ethiopianCalendar";
 
 export async function POST(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = getSupabaseAdminClient();
+    const supabase = await getSupabaseServerClient();
 
     const { data, error } = await supabase
       .from("appointments")

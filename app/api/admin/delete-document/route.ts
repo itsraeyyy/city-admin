@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 export async function DELETE(request: Request) {
@@ -14,7 +14,7 @@ export async function DELETE(request: Request) {
             );
         }
 
-        const supabase = getSupabaseAdminClient();
+        const supabase = await getSupabaseServerClient();
 
         // Get document details first
         const { data: document, error: fetchError } = await supabase

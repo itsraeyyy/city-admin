@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,12 +13,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const supabase = getSupabaseAdminClient();
+    const supabase = await getSupabaseServerClient();
 
     const { data, error } = await supabase
-      .from("appointments")
-      .select("*")
-      .eq("unique_code", code.toUpperCase())
+      .rpc("get_appointment_by_code", { code_input: code.toUpperCase() })
       .single();
 
     if (error) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 
 export async function DELETE(request: Request) {
     try {
@@ -13,7 +13,7 @@ export async function DELETE(request: Request) {
             );
         }
 
-        const supabase = getSupabaseAdminClient();
+        const supabase = await getSupabaseServerClient();
 
         // Delete the QR request
         const { error: deleteError } = await supabase

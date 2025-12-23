@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { publicEnv } from "@/lib/env";
 import { parseEthiopianDate, ethiopianToGregorian } from "@/lib/ethiopianCalendar";
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     // Generate unique code (8 characters: APT + 5 random alphanumeric)
     const uniqueCode = `APT${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
-    const supabase = getSupabaseAdminClient();
+    const supabase = await getSupabaseServerClient();
     const woredaId = publicEnv.NEXT_PUBLIC_WOREDA_ID;
 
     // Insert appointment

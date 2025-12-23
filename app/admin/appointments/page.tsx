@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 import { publicEnv } from "@/lib/env";
 import { AdminAppointmentsClient } from "@/components/admin/AdminAppointmentsClient";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 async function getAppointments(): Promise<AppointmentRecord[]> {
-  const supabase = getSupabaseAdminClient();
+  const supabase = await getSupabaseServerClient();
   const woredaId = publicEnv.NEXT_PUBLIC_WOREDA_ID;
 
   const { data, error } = await supabase
