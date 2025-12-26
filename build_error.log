@@ -1,0 +1,83 @@
+
+> woreda9@0.1.0 build
+> next build
+
+ ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Raey\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Raey\sammmyy\package-lock.json
+
+   Γû▓ Next.js 16.0.8 (Turbopack)
+   - Environments: .env.local, .env
+
+ ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 4 errors:
+./sammmyy/app/api/admin/delete-document/route.ts:3:1
+Module not found: Can't resolve '@aws-sdk/client-s3'
+  1 | import { NextResponse } from "next/server";
+  2 | import { getSupabaseServerClient } from "@/lib/supabaseServer";
+> 3 | import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 |
+  5 | export async function DELETE(request: Request) {
+  6 |     try {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./sammmyy/app/api/documents/view/route.ts:3:1
+Module not found: Can't resolve '@aws-sdk/client-s3'
+  1 | import { NextRequest, NextResponse } from "next/server";
+  2 | import { validateTemporaryAccess } from "@/lib/access";
+> 3 | import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { requiredEnv } from "@/lib/env";
+  5 |
+  6 | export async function GET(request: NextRequest) {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./sammmyy/app/api/admin/upload-team-photo/route.ts:2:1
+Export uploadDocumentToR2 doesn't exist in target module
+  1 | import { NextRequest, NextResponse } from "next/server";
+> 2 | import { uploadDocumentToR2 } from "@/lib/uploads";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 |
+  4 | export async function POST(req: NextRequest) {
+  5 |     try {
+
+The export uploadDocumentToR2 was not found in module [project]/sammmyy/src/lib/uploads.ts [app-route] (ecmascript).
+Did you mean to import uploadDocument?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+
+./sammmyy/app/api/admin/upload/route.ts:2:1
+Export uploadDocumentToR2 doesn't exist in target module
+  1 | import { NextResponse } from "next/server";
+> 2 | import { uploadDocumentToR2, saveDocumentMetadata } from "@/lib/uploads";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import { getCurrentUserWoredaId } from "@/lib/supabaseServer";
+  4 |
+  5 | export async function POST(request: Request) {
+
+The export uploadDocumentToR2 was not found in module [project]/sammmyy/src/lib/uploads.ts [app-route] (ecmascript).
+Did you mean to import uploadDocument?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+
+    at <unknown> (./sammmyy/app/api/admin/delete-document/route.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./sammmyy/app/api/documents/view/route.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./sammmyy/app/api/admin/upload-team-photo/route.ts:2:1)
+    at <unknown> (./sammmyy/app/api/admin/upload/route.ts:2:1)

@@ -1,0 +1,31 @@
+
+> woreda9@0.1.0 build
+> next build
+
+ ΓÜá Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\Raey\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\Raey\sammmyy\package-lock.json
+
+   Γû▓ Next.js 16.0.8 (Turbopack)
+   - Environments: .env.local, .env
+
+ ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 48s
+   Running TypeScript ...
+Failed to compile.
+
+./app/api/documents/view/route.ts:47:35
+Type error: Property 'CLOUDFLARE_R2_UPLOAD_URL' does not exist on type '{ SUPABASE_URL: () => string; SUPABASE_SERVICE_ROLE_KEY: () => string; }'.
+
+  45 |
+  46 |     // Extract endpoint from upload URL
+> 47 |     const uploadUrl = requiredEnv.CLOUDFLARE_R2_UPLOAD_URL();
+     |                                   ^
+  48 |     const urlObj2 = new URL(uploadUrl);
+  49 |     const endpoint = `https://${urlObj2.hostname}`;
+  50 |
+Next.js build worker exited with code: 1 and signal: null

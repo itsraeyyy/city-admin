@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadDocumentToR2 } from "@/lib/uploads";
+import { uploadDocument } from "@/lib/uploads";
 
 export async function POST(req: NextRequest) {
     try {
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
         const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
         const folderPath = `team/${timestamp}-${safeName}`;
 
-        const url = await uploadDocumentToR2({
+        const url = await uploadDocument({
             folderPath,
             file
         });

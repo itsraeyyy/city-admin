@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabaseServer";
-import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 export async function DELETE(request: Request) {
     try {
@@ -30,57 +29,46 @@ export async function DELETE(request: Request) {
             );
         }
 
-        // Delete from R2
+        // Delete from Storage (Supabase)
         try {
-            const uploadUrl = process.env.CLOUDFLARE_R2_UPLOAD_URL;
-            if (!uploadUrl) {
-                throw new Error("CLOUDFLARE_R2_UPLOAD_URL not configured");
-            }
+            const fileUrl = document.r2_url;
+            // Extract path from Supabase URL
+            // Format: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
+            // We need <path>
 
-            const urlObj = new URL(uploadUrl);
-            const endpoint = `https://${urlObj.hostname}`;
-            const bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME || "woreda-documents";
+            let path = "";
+            const bucketName = "documents"; // Should match bucket name in uploads.ts
 
-            const accessKeyId = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
-            const secretAccessKey = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
-
-            if (!accessKeyId || !secretAccessKey) {
-                throw new Error("R2 credentials not configured");
-            }
-
-            // Extract the key from the R2 URL
-            const r2Url = document.r2_url;
-            let key = "";
-
-            if (r2Url.includes('.r2.dev')) {
-                const r2UrlObj = new URL(r2Url);
-                key = r2UrlObj.pathname.substring(1); // Remove leading slash
-
-                // Remove bucket name if it's in the path
-                if (key.startsWith(bucketName + '/')) {
-                    key = key.substring(bucketName.length + 1);
+            if (fileUrl && fileUrl.includes(bucketName)) {
+                // Simple extraction strategy: find bucket name and take everything after
+                const parts = fileUrl.split(`/${bucketName}/`);
+                if (parts.length > 1) {
+                    path = parts[1];
                 }
             }
 
-            const s3Client = new S3Client({
-                region: "auto",
-                endpoint: endpoint,
-                credentials: {
-                    accessKeyId: accessKeyId,
-                    secretAccessKey: secretAccessKey,
-                },
-                forcePathStyle: true,
-            });
+            if (path) {
+                // Decode URI component just in case
+                path = decodeURIComponent(path);
 
-            const deleteCommand = new DeleteObjectCommand({
-                Bucket: bucketName,
-                Key: key,
-            });
+                console.log(`Deleting file from Supabase Storage: ${path}`);
+                const { error: storageError } = await supabase
+                    .storage
+                    .from(bucketName)
+                    .remove([path]);
 
-            await s3Client.send(deleteCommand);
-        } catch (r2Error) {
-            console.error("Error deleting from R2:", r2Error);
-            // Continue with database deletion even if R2 deletion fails
+                if (storageError) {
+                    console.error("Error deleting from Supabase Storage:", storageError);
+                    // We continue to delete from DB even if storage fails
+                } else {
+                    console.log("File deleted from Supabase Storage");
+                }
+            } else {
+                console.log("Could not extract path from URL (might be legacy R2 URL), skipping storage deletion:", fileUrl);
+            }
+
+        } catch (error) {
+            console.error("Error in storage deletion process:", error);
         }
 
         // Delete from database

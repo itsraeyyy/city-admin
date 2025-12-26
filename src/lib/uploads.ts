@@ -47,8 +47,7 @@ export async function uploadDocument(args: {
   }
 }
 
-// Alias for backward compatibility if needed, but verify usage
-export const uploadDocumentToR2 = uploadDocument;
+// Alias removed
 
 
 import { getCurrentUserWoredaId } from "./supabaseServer";

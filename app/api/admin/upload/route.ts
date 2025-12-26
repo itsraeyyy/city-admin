@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { uploadDocumentToR2, saveDocumentMetadata } from "@/lib/uploads";
+import { uploadDocument, saveDocumentMetadata } from "@/lib/uploads";
 import { getCurrentUserWoredaId } from "@/lib/supabaseServer";
 
 export async function POST(request: Request) {
@@ -35,21 +35,21 @@ export async function POST(request: Request) {
     const safeName = file.name;
     const folderPath = `${woredaId}/${categoryId}/${subcategoryCode}/${year}/${safeName}`;
 
-    console.log("Uploading to R2:", folderPath);
+    console.log("Uploading to Storage:", folderPath);
 
-    let r2Url: string;
+    let storageUrl: string;
     try {
-      r2Url = await uploadDocumentToR2({
+      storageUrl = await uploadDocument({
         file,
         folderPath,
       });
-      console.log("R2 upload successful:", r2Url);
-    } catch (r2Error) {
-      console.error("R2 upload failed:", r2Error);
+      console.log("Storage upload successful:", storageUrl);
+    } catch (uploadError) {
+      console.error("Storage upload failed:", uploadError);
       return NextResponse.json(
         {
           message: "Failed to upload file to storage.",
-          error: r2Error instanceof Error ? r2Error.message : String(r2Error)
+          error: uploadError instanceof Error ? uploadError.message : String(uploadError)
         },
         { status: 500 }
       );
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         subcategoryCode,
         year,
         fileName: file.name,
-        r2Url,
+        r2Url: storageUrl,
         uploaderId: "admin",
       });
       console.log("Metadata saved successfully");
