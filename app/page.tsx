@@ -7,11 +7,28 @@ import { Footer } from "@/components/Footer";
 import { woredaLeadership } from "@/data/leaders";
 import { publicEnv } from "@/lib/env";
 import { getCommissionMembers } from "@/lib/data/team";
+import { getSupabaseServerClient } from "@/lib/supabaseServer";
 
 export const revalidate = 0; // Ensure dynamic data
 
 export default async function Home() {
     const commissionCategories = await getCommissionMembers();
+    const supabase = await getSupabaseServerClient();
+
+    // Fetch dynamic leader message
+    const { data: messages } = await supabase
+        .from("leader_messages")
+        .select("*")
+        .limit(1);
+
+    const dbLeaderMessage = messages?.[0];
+
+    const principal = dbLeaderMessage ? {
+        name: dbLeaderMessage.name,
+        title: dbLeaderMessage.title,
+        photo: dbLeaderMessage.photo_url || woredaLeadership.principal.photo,
+        speech: dbLeaderMessage.message
+    } : woredaLeadership.principal;
 
     return (
         <div className="min-h-screen bg-white font-sans">
@@ -22,7 +39,7 @@ export default async function Home() {
             <HeroSection />
 
             {/* Administrator Message */}
-            <PrincipalMessage principal={woredaLeadership.principal} />
+            <PrincipalMessage principal={principal} />
 
             {/* News Section (Server Component) - Placed right above Members list */}
             <NewsSection />

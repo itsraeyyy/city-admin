@@ -17,6 +17,7 @@ const navItems = [
   { href: "/admin/qr-generator", label: "generateQR", icon: HiQrCode },
   { href: "/admin/requests", label: "qrRequests", icon: HiQrCode },
   { href: "/admin/appointments", label: "appointments", icon: HiCalendar },
+  { href: "/admin/leader-message", label: "leaderMessage", icon: HiUserCircle },
   { href: "/admin/team", label: "teamMembers", icon: HiUserGroup },
 ];
 
