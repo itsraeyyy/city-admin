@@ -18,7 +18,7 @@ export const publicEnv = {
   // Default Supabase URL to the known project so SUPABASE_URL is not required
   // for basic public news fetching. In production, override via env vars.
   NEXT_PUBLIC_SUPABASE_URL:
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://oblhonzlkflvoxqymmys.supabase.co",
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://zuemtxxrmmfabdlmtxzf.supabase.co",
   NEXT_PUBLIC_SUPABASE_ANON_KEY:
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "",
 };
