@@ -62,7 +62,7 @@ export function FileViewer({ fileUrl, fileName, isOpen, onClose, accessToken }: 
             }
 
 
-            // Use Microsoft Office Online Viewer with the public R2 URL
+            // Use Microsoft Office Online Viewer with the public URL
             // Note: publicUrl already has properly encoded path components, so we encode the entire URL
             // for use as a query parameter (this is correct - we're encoding the URL as a whole)
             const officeViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(publicUrl)}`;
