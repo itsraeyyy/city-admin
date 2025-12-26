@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { motion } from "framer-motion";
@@ -25,6 +26,8 @@ export function LeaderMessageForm({ initialData }: LeaderMessageFormProps) {
     const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(initialData?.photo_url || null);
     const supabase = supabaseBrowser;
+
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -68,10 +71,6 @@ export function LeaderMessageForm({ initialData }: LeaderMessageFormProps) {
                 updated_at: new Date().toISOString(),
             };
 
-            // Since we want a single message, we can check if we have initialData to update, or insert new.
-            // Ideally we might want just one row in the table ever. 
-            // If initialData exists, update it. If not, insert.
-
             let error;
             if (initialData?.id) {
                 const { error: updateError } = await supabase
@@ -88,9 +87,11 @@ export function LeaderMessageForm({ initialData }: LeaderMessageFormProps) {
 
             if (error) throw new Error(error.message);
 
-            setStatus({ type: 'success', message: "Leader message updated successfully!" });
-            // update preview if needed
-            if (photoUrl) setPreviewUrl(photoUrl);
+            setStatus({ type: 'success', message: "Leader message saved successfully!" });
+
+            // Redirect back to list after short delay or immediately refresh
+            router.push('/admin/leader-message');
+            router.refresh();
 
         } catch (err) {
             console.error(err);

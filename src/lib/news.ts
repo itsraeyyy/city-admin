@@ -56,7 +56,8 @@ export async function getNews(limit = 6): Promise<NewsRecord[]> {
     // #endregion
 
     if (error) {
-        console.error("Error fetching news:", error);
+        console.error("Error fetching news:", JSON.stringify(error, null, 2));
+        console.error("Error details:", error.message, error.code, error.details);
         return [];
     }
 

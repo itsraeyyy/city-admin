@@ -15,6 +15,7 @@
         "manageTeamMembers": "የቡድን አባላትን ያቀናብሩ",
         "addMember": "አባል አክል",
         "editMember": "አባልን ያርትዑ",
+        "leaderMessage": "የመሪ መልዕክት",
         "confirmDelete": "ይህንን አባል መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?",
         "errorDeleting": "አባልን መሰረዝ አልተሳካም",
         "errorSaving": "አባልን ማስቀመጥ አልተሳካም",

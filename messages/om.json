@@ -11,6 +11,7 @@
     "admin": {
         "secureAdminPortal": "Seensa Bulchaa Nageenya Qabu",
         "adminDescription": "Galmee bulchi, hayyama gaaffii fudhachi, ogeessa aanaa hojii tooraan bulchiinsa hubannoo qabu irraa bulchi.",
+        "leaderMessage": "Ergaa Hoggantoota",
         "secureAccess": "Hayyama Nageenya Qabu",
         "authorizedOnly": "Namoota Hayyamamaniin Qofa",
         "welcomeBack": "Baga Nagaan Dhufte",

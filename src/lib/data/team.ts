@@ -9,7 +9,8 @@ export async function getCommissionMembers(): Promise<LeaderCategory[]> {
         .order("display_order", { ascending: true });
 
     if (error) {
-        console.error("Error fetching team members:", error);
+        console.error("Error fetching team members:", JSON.stringify(error, null, 2));
+        console.error("Error details:", error.message, error.code, error.details);
         return [];
     }
 
